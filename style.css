@@ -1,0 +1,17 @@
+*
+{
+    text-transform: capitalize;
+
+}
+:root
+{
+    --background: #A0C49D;
+    --color:#f7ffe5;
+    --border:#e1ecc8;
+    --rgb:#c4d7b2;
+}
+body
+{
+    background-color: var(--background);
+    
+   }
