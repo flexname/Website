@@ -1,1296 +1,2158 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-    <meta charset='UTF-8'></meta>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'></meta>
-    <meta name='description' content='Premium Music Player with smart recommendations'></meta>
-    <meta name='keywords' content='music player, songs, audio player'></meta>
-    <meta name='author' content='Your Name'></meta>
-    <title>Simple Music Player</title>
-    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css'></link>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeMaster Pro | Premium Typing Practice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #9370DB;
-            --secondary: #B384FF;
-            --text: #ffffff;
-            --glass: rgba(255, 255, 255, 0.15);
+            /* Color Palette */
+            --primary-color: #5C6BC0;
+            --primary-light: #8E99F3;
+            --primary-dark: #26418F;
+            --secondary-color: #FF5722;
+            --accent-color: #4DD0E1;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-light: #f8f9fa;
+            --bg-color: #f1f3f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            --border-radius: 16px;
+            --navbar-height: 70px;
+            --transition-speed: 0.3s;
+            --correct-color: #4caf50;
+            --error-color: #f44336;
+            --neutral-color: #9e9e9e;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.18);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            --gradient-secondary: linear-gradient(135deg, var(--secondary-color), #FF8A65);
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), #26C6DA);
+            --gradient-background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Arial, sans-serif;
         }
-        
+
         body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-primary);
+            background: var(--gradient-background);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--text);
-            padding: 10px;
-            background: linear-gradient(135deg, #9370DB, #B384FF);
+            overflow-x: hidden;
+            padding-top: 0;
+            transition: all var(--transition-speed) ease;
         }
-        
+
+        /* Hide scrollbar but maintain functionality */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        * {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
         .container {
-            width: 900px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
         }
-        
-        /* Sidebar */
-        .sidebar {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            border-radius: 20px 0 0 20px;
+
+        .typing-app {
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 100vh;
+            height: auto;
+            position: relative;
+            overflow-x: hidden;
         }
-        
+
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: var(--glass-border);
+            height: var(--navbar-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
         .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 18px;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            font-size: 22px;
-        }
-        
-        .menu-group {
-            margin-bottom: 20px;
-        }
-        
-        .menu-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            opacity: 0.7;
-        }
-        
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 2px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        
-        .menu-item:hover {
-            background: var(--glass);
-        }
-        
-        .menu-item.active {
-            background: var(--glass);
-        }
-        
-        .menu-item i {
-            margin-right: 10px;
-            width: 16px;
-            text-align: center;
-        }
-        
-        /* Main Content */
-        .main {
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            height: 100%;
-        }
-        
-        .search-bar {
-            background: var(--glass);
-            border-radius: 20px;
-            padding: 8px 15px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .search-bar input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: white;
-            flex: 1;
-            margin-left: 10px;
-            font-size: 14px;
-        }
-        
-        .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        /* Player */
-        .player-section {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .vinyl-container {
-            width: 150px;
-            height: 150px;
-            position: relative;
-            flex-shrink: 0;
-        }
-        
-        .vinyl {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: #000;
-            background-image: 
-                radial-gradient(circle at center, rgba(255, 255, 255, 0.7) 10%, transparent 11%),
-                repeating-radial-gradient(rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.8) 5%, transparent 6%, transparent 9%),
-                linear-gradient(to right, #000, #222, #000);
-            position: relative;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            animation: rotate 20s linear infinite;
-            animation-play-state: paused;
-        }
-        
-        .vinyl.playing {
-            animation-play-state: running;
-        }
-        
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .player-controls {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .song-info {
-            margin-bottom: 15px;
-        }
-        
-        .song-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-        
-        .song-artist {
-            font-size: 14px;
-            opacity: 0.8;
-        }
-        
-        .progress-container {
-            width: 100%;
-            height: 4px;
-            background: var(--glass);
-            border-radius: 2px;
-            cursor: pointer;
-            margin-bottom: 5px;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: white;
-            width: 0%;
-        }
-        
-        .time-info {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            font-size: 12px;
-            margin-bottom: 15px;
-            opacity: 0.8;
-        }
-        
-        .control-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        
-        .control-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-        
-        .control-btn:hover {
-            background: var(--glass);
-        }
-        
-        .control-btn.active {
-            color: var(--secondary);
-        }
-        
-        .play-btn {
-            background: white;
-            color: var(--primary);
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-        }
-        
-        .play-btn:hover {
-            transform: scale(1.05);
-            background: white;
-        }
-        
-        .feature-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .feature-btn {
-            background: var(--glass);
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .feature-btn:hover {
-            background: rgba(255, 255, 255, 0.25);
-        }
-        
-        .feature-btn.active {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        /* Song List */
-        .song-list-section {
-            flex: 1;
-            margin-top: 5px;
-            display: flex;
-            flex-direction: column;
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-height: 250px;
-        }
-        
-        .list-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .list-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .song-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 5px;
-            height: 200px;
-        }
-        
-        .song-list::-webkit-scrollbar {
-            width: 5px;
-        }
-        
-        .song-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        .song-list::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-        }
-        
-        .song-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 2px;
-            transition: all 0.2s;
-        }
-        
-        .song-item:hover {
-            background: var(--glass);
-        }
-        
-        .song-item.active {
-            background: var(--glass);
-        }
-        
-        .song-number {
-            width: 20px;
-            font-size: 12px;
-            text-align: center;
-            opacity: 0.7;
-        }
-        
-        .song-details {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .song-name {
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .song-artist-small {
-            font-size: 12px;
-            opacity: 0.7;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .song-duration {
-            font-size: 12px;
-            opacity: 0.7;
-            margin-right: 5px;
-        }
-        
-        .song-actions {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .song-btn {
-            background: transparent;
-            border: none;
-            color: white;
-            opacity: 0.7;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
-        
-        .song-btn:hover {
-            opacity: 1;
-        }
-        
-        .notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s;
-            font-size: 13px;
-            z-index: 1000;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .notification.show {
-            transform: translateY(0);
-            opacity: 1;
         }
 
-        /* Responsive */
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-left: 10px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            background: var(--glass-bg);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 0;
+            gap: 30px;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-section p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: calc(var(--border-radius) - 4px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .typing-container {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
+            margin-bottom: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 400px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.2s ease;
+            border-radius: 3px;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .time-remaining {
+            font-size: 1.2rem;
+        }
+
+        .paragraph-container {
+            flex: 1;
+            position: relative;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            overflow: hidden;
+            min-height: 200px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .paragraph-text {
+            font-family: 'JetBrains Mono', monospace;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            line-height: 1.8;
+            width: 100%;
+            padding: 15px 0;
+        }
+
+        .paragraph-text span {
+            position: relative;
+            transition: all 0.1s ease;
+        }
+
+        .paragraph-text span.current {
+            border-left: 2px solid var(--primary-color);
+            animation: blink 1s infinite;
+        }
+
+        .paragraph-text span.correct {
+            color: var(--correct-color);
+        }
+
+        .paragraph-text span.incorrect {
+            color: var(--error-color);
+            text-decoration: underline;
+        }
+
+        @keyframes blink {
+            0%, 100% { border-left-color: transparent; }
+            50% { border-left-color: var(--primary-color); }
+        }
+
+        .typing-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .settings-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .settings-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .settings-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .toggle-option,
+        .select-option {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toggle-option.active,
+        .select-option.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .toggle-option:hover,
+        .select-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Control buttons for start/pause/restart */
+        .control-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: 50px;
+            padding: 10px 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .control-btn.primary {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Achievements and modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary-color);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: calc(var(--border-radius) - 4px);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-item.locked {
+            filter: grayscale(1);
+            opacity: 0.7;
+        }
+
+        .achievement-item.locked::before {
+            content: "\f023";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .achievement-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .achievement-description {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        /* Achievement notification */
+        .achievement-notification {
+            position: fixed;
+            bottom: -100px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 300px;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            z-index: 900;
+        }
+
+        .achievement-notification.active {
+            bottom: 20px;
+        }
+
+        .notification-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .notification-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                width: 95%;
+            .navbar {
+                padding: 0 15px;
+                height: auto;
+                min-height: var(--navbar-height);
+            }
+
+            .logo h1 {
+                font-size: 1.4rem;
             }
             
-            .sidebar {
-                border-radius: 20px 20px 0 0;
+            .container {
+                padding: 0 15px;
+            }
+
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+                margin-bottom: 20px;
+            }
+
+            .typing-container {
+                padding: 20px;
+            }
+
+            .paragraph-text {
+                font-size: 1.1rem;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .achievements-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .paragraph-container {
+                min-height: 180px;
+            }
+            
+            .modal {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                flex-direction: column;
+                padding: 10px 15px;
+                gap: 10px;
+                height: auto;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .logo {
+                margin-bottom: 5px;
+            }
+            
+            .main-content {
+                padding: 20px 0;
+                gap: 20px;
+            }
+            
+            .stats-panel {
+                grid-template-columns: 1fr 1fr;
+                padding: 15px;
+                gap: 10px;
+            }
+            
+            .stat-item {
                 padding: 10px;
             }
             
-            .player-section {
-                flex-direction: column;
-                align-items: center;
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .nav-controls {
+                gap: 10px;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
             }
             
-            .song-list-section {
-                margin-top: 10px;
+            .typing-container {
+                padding: 15px;
+                min-height: 350px;
             }
+
+            .control-buttons {
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            
+            .control-btn {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .achievement-notification {
+                width: calc(100% - 30px);
+                padding: 15px;
+            }
+            
+            .modal {
+                width: 95%;
+                padding: 15px;
+            }
+            
+            .result-stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .result-stat-item {
+                padding: 10px;
+            }
+            
+            .result-stat-value {
+                font-size: 1.5rem;
+            }
+            
+            .result-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .result-actions .control-btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 20px auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Start screen */
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-background);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+            transition: all 0.5s ease;
+        }
+
+        .start-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .typing-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .start-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .start-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        .start-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(92, 107, 192, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(92, 107, 192, 0.4);
+        }
+
+        /* Result screen */
+        .result-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-background);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 90;
+            transition: all 0.5s ease;
+            opacity: 0;
+            visibility: hidden;
+            padding: 20px;
+        }
+
+        .result-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .result-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .result-stat-item {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: calc(var(--border-radius) - 4px);
+            padding: 15px;
+        }
+
+        .result-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .result-stat-value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Keyboard visualization */
+        .keyboard-container {
+            display: none;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            margin-top: 20px;
+        }
+
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .key {
+            background: white;
+            border-radius: 5px;
+            padding: 10px;
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.1s ease;
+        }
+
+        .key.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(2px);
+        }
+
+        .key.space {
+            width: 200px;
+        }
+
+        .image-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-image {
+            position: absolute;
+            opacity: 0.03;
+            transition: all 1s ease;
+        }
+
+        .bg-image.top-left {
+            top: -200px;
+            left: -200px;
+            transform: rotate(-15deg);
+        }
+
+        .bg-image.bottom-right {
+            bottom: -200px;
+            right: -200px;
+            transform: rotate(15deg);
         }
     </style>
 </head>
 <body>
-    <div class='container'>
-        <!-- Sidebar -->
-        <div class='sidebar'>
-            <div class='logo'>
-                <i class='fas fa-music'></i>
-                <span>Music Player</span>
+    <div class="typing-app">
+        <!-- Background Images -->
+        <div class="image-container">
+            <div class="bg-image top-left">
+                <svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M480,320 C580,220 560,40 400,40 C240,40 50,220 50,320 C50,420 200,550 400,550 C600,550 380,420 480,320 Z" fill="#5C6BC0" fill-opacity="0.1"/>
+                </svg>
             </div>
-            
-            <div class='menu-group'>
-                <div class='menu-title'>BROWSE</div>
-                <div class='menu-item active' data-category='all'>
-                    <i class='fas fa-music'></i>
-                    <span>All Songs</span>
-                </div>
-                <div class='menu-item' data-category='favorites'>
-                    <i class='fas fa-heart'></i>
-                    <span>Favorites</span>
-                </div>
-                <div class='menu-item' data-category='recent'>
-                    <i class='fas fa-history'></i>
-                    <span>Recently Played</span>
-                </div>
+            <div class="bg-image bottom-right">
+                <svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M480,320 C580,220 560,40 400,40 C240,40 50,220 50,320 C50,420 200,550 400,550 C600,550 380,420 480,320 Z" fill="#FF5722" fill-opacity="0.1"/>
+                </svg>
             </div>
-            
-            <div class='menu-group'>
-                <div class='menu-title'>CATEGORIES</div>
-                <div class='menu-item' data-category='sad'>
-                    <i class='fas fa-cloud-rain'></i>
-                    <span>Sad Songs</span>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="start-screen" id="startScreen">
+            <div class="typing-logo">
+                <i class="fas fa-keyboard"></i>
+            </div>
+            <h1 class="start-title">TypeMaster Pro</h1>
+            <p class="start-subtitle">Enhance your typing skills with our premium typing practice tool. Track your progress, earn achievements, and become a typing master!</p>
+            <button class="start-btn" id="startBtn">
+                <i class="fas fa-play"></i> Start Typing
+            </button>
+        </div>
+
+        <!-- Main App Content -->
+        <header class="navbar">
+            <div class="logo">
+                <i class="fas fa-keyboard" style="font-size: 1.8rem; color: var(--primary-color);"></i>
+                <h1>TypeMaster Pro</h1>
+            </div>
+            <div class="nav-controls">
+                <button class="nav-btn" id="achievementsBtn">
+                    <i class="fas fa-trophy"></i> Achievements
+                </button>
+                <button class="nav-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+                <div class="stats-panel">
+                    <div class="stat-item">
+                        <div class="stat-label">WPM</div>
+                        <div class="stat-value" id="wpm">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Accuracy</div>
+                        <div class="stat-value" id="accuracy">0%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Words</div>
+                        <div class="stat-value" id="wordsTyped">0</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Characters</div>
+                        <div class="stat-value" id="charsTyped">0</div>
+                    </div>
                 </div>
-                <div class='menu-item' data-category='party'>
-                    <i class='fas fa-cocktail'></i>
-                    <span>Party Songs</span>
-                </div>
-                <div class='menu-item' data-category='ost'>
-                    <i class='fas fa-film'></i>
-                    <span>OST</span>
-                </div>
-                <div class='menu-item' data-category='gym'>
-                    <i class='fas fa-dumbbell'></i>
-                    <span>Gym Songs</span>
-                </div>
-                <div class='menu-item' data-category='lofi'>
-                    <i class='fas fa-headphones'></i>
-                    <span>Lofi</span>
+
+                <div class="typing-container">
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar"></div>
+                    </div>
+                    <div class="timer-display">
+                        <span class="time-remaining" id="timer">01:00</span>
+                    </div>
+                    <div class="paragraph-container">
+                        <div class="paragraph-text" id="paragraphText"></div>
+                        <input type="text" class="typing-input" id="typingInput" autocomplete="off" />
+                    </div>
+                    <div class="control-buttons">
+                        <button class="control-btn" id="restartBtn">
+                            <i class="fas fa-redo"></i> Restart
+                        </button>
+                        <button class="control-btn primary" id="pauseBtn">
+                            <i class="fas fa-pause"></i> Pause
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Main Content -->
-        <div class='main'>
-            <div class='search-bar'>
-                <i class='fas fa-search'></i>
-                <input type='text' id='searchInput' placeholder='Search songs, artists...'></input>
-            </div>
-            
-            <div class='player-section'>
-                <div class='vinyl-container'>
-                    <div class='vinyl' id='vinyl'>
-                        <div class='label' id='label'>Ishq</div>
-                    </div>
+
+        <!-- Achievements Modal -->
+        <div class="modal-overlay" id="achievementsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Achievements</h2>
+                    <button class="modal-close" id="closeAchievementsBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                
-                <div class='player-controls'>
-                    <div class='song-info'>
-                        <div class='song-title' id='title'>Ishq Hai</div>
-                        <div class='song-artist' id='artist'>Rahat</div>
-                    </div>
-                    
-                    <div class='progress-container' id='progressContainer'>
-                        <div class='progress-bar' id='progressBar'></div>
-                    </div>
-                    
-                    <div class='time-info'>
-                        <span id='currentTime'>0:00</span>
-                        <span id='duration'>0:00</span>
-                    </div>
-                    
-                    <div class='control-buttons'>
-                        <button class='control-btn' id='shuffleBtn' title='Shuffle'>
-                            <i class='fas fa-random'></i>
-                        </button>
-                        <button class='control-btn' id='prevBtn' title='Previous'>
-                            <i class='fas fa-step-backward'></i>
-                        </button>
-                        <button class='control-btn play-btn' id='playBtn' title='Play/Pause'>
-                            <i class='fas fa-play'></i>
-                        </button>
-                        <button class='control-btn' id='nextBtn' title='Next'>
-                            <i class='fas fa-step-forward'></i>
-                        </button>
-                        <button class='control-btn' id='repeatBtn' title='Repeat'>
-                            <i class='fas fa-redo'></i>
-                        </button>
-                    </div>
-                    
-                    <div class='feature-buttons'>
-                        <button class='feature-btn' id='favoriteBtn' title='Add to Favorites'>
-                            <i class='far fa-heart'></i>
-                            <span>Favorite</span>
-                        </button>
-                        <button class='feature-btn' id='shareBtn' title='Share'>
-                            <i class='fas fa-share-alt'></i>
-                            <span>Share</span>
-                        </button>
-                        <button class='feature-btn' id='volumeBtn' title='Volume'>
-                            <i class='fas fa-volume-up'></i>
-                            <span>Volume</span>
-                        </button>
-                        <button class='feature-btn' id='speedBtn' title='Playback Speed'>
-                            <i class='fas fa-tachometer-alt'></i>
-                            <span>Speed</span>
-                        </button>
-                    </div>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievements will be loaded here -->
+                    <div class="spinner"></div>
                 </div>
             </div>
-            
-            <div class='song-list-section'>
-                <div class='list-header'>
-                    <div class='list-title' id='playlistTitle'>All Songs</div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div class="modal-overlay" id="settingsModal">
+            <div class="modal">
+                <div class="modal-header">
+                    <h2 class="modal-title">Settings</h2>
+                    <button class="modal-close" id="closeSettingsBtn">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class='song-list' id='songList'>
-                    <!-- Songs will be populated here -->
+                <div class="settings-grid">
+                    <div class="settings-group">
+                        <h3 class="settings-title">Sound</h3>
+                        <div class="settings-options">
+                            <button class="toggle-option active" data-setting="sound" data-value="on">
+                                <i class="fas fa-volume-up"></i> On
+                            </button>
+                            <button class="toggle-option" data-setting="sound" data-value="off">
+                                <i class="fas fa-volume-mute"></i> Off
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 class="settings-title">Highlighting</h3>
+                        <div class="settings-options">
+                            <button class="toggle-option active" data-setting="highlighting" data-value="on">
+                                <i class="fas fa-highlighter"></i> On
+                            </button>
+                            <button class="toggle-option" data-setting="highlighting" data-value="off">
+                                <i class="fas fa-eye-slash"></i> Off
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 class="settings-title">Difficulty</h3>
+                        <div class="settings-options">
+                            <button class="select-option active" data-setting="difficulty" data-value="easy">
+                                <i class="fas fa-smile"></i> Easy
+                            </button>
+                            <button class="select-option" data-setting="difficulty" data-value="medium">
+                                <i class="fas fa-meh"></i> Medium
+                            </button>
+                            <button class="select-option" data-setting="difficulty" data-value="hard">
+                                <i class="fas fa-grimace"></i> Hard
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 class="settings-title">Time Limit</h3>
+                        <div class="settings-options">
+                            <button class="select-option" data-setting="timeLimit" data-value="30">
+                                <i class="fas fa-stopwatch"></i> 30s
+                            </button>
+                            <button class="select-option active" data-setting="timeLimit" data-value="60">
+                                <i class="fas fa-stopwatch"></i> 1m
+                            </button>
+                            <button class="select-option" data-setting="timeLimit" data-value="120">
+                                <i class="fas fa-stopwatch"></i> 2m
+                            </button>
+                            <button class="select-option" data-setting="timeLimit" data-value="300">
+                                <i class="fas fa-stopwatch"></i> 5m
+                            </button>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <h3 class="settings-title">Language</h3>
+                        <div class="settings-options">
+                            <button class="select-option active" data-setting="language" data-value="english">
+                                <i class="fas fa-language"></i> English
+                            </button>
+                            <button class="select-option" data-setting="language" data-value="hinglish">
+                                <i class="fas fa-language"></i> Hinglish
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Achievement Notification -->
+        <div class="achievement-notification" id="achievementNotification">
+            <div class="notification-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">Achievement Unlocked!</div>
+                <div class="notification-desc" id="notificationDesc">You earned a new achievement</div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-card">
+                <h2 class="result-title">Your Results</h2>
+                <div class="result-stats">
+                    <div class="result-stat-item">
+                        <div class="result-stat-label">WPM</div>
+                        <div class="result-stat-value" id="resultWpm">0</div>
+                    </div>
+                    <div class="result-stat-item">
+                        <div class="result-stat-label">Accuracy</div>
+                        <div class="result-stat-value" id="resultAccuracy">0%</div>
+                    </div>
+                    <div class="result-stat-item">
+                        <div class="result-stat-label">Words</div>
+                        <div class="result-stat-value" id="resultWords">0</div>
+                    </div>
+                    <div class="result-stat-item">
+                        <div class="result-stat-label">Characters</div>
+                        <div class="result-stat-value" id="resultChars">0</div>
+                    </div>
+                </div>
+                <div id="newAchievements"></div>
+                <div class="result-actions">
+                    <button class="control-btn" id="returnHomeBtn">
+                        <i class="fas fa-home"></i> Home
+                    </button>
+                    <button class="control-btn primary" id="tryAgainBtn">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    
-    <div class='notification' id='notification'>Notification message</div>
-    
+
     <script>
-    // Base URL for all songs
-    const BASE_URL = "https://res.cloudinary.com/deiv7sq5i/video/upload/v1718461209/songs/";
-    
-    // Songs data with shortened links and lofi tag added to some songs
-    const allSongs = [
-        { name: "Tu Shayar Banaagi", description: "sad song parry sidhu", src: "music-1" },
-        { name: "Kaisi Teri Khudgharzi", description: "sad song rahat fateh khan ost", src: "music-2" },
-        { name: "Allah Ve", description: "sad song jassie gill", src: "music-3" },
-        { name: "Baatein Ye Kabhi Na", description: "sad song arigit singh lofi", src: "music-4" },
-        { name: "Bhulliye Kive'n", description: "sad song satinder sartaaj", src: "music-5" },
-        { name: "Dil Diyan Gallan", description: "sad song atif aslam lofi", src: "music-6" },
-        { name: "Don't Look", description: "** karan aujla gym", src: "music-7" },
-        { name: "Habibi", description: "** saajz, himaanshi khurana", src: "music-8" },
-        { name: "Hai Dil Ye Mera", description: "sad song arijit singh lofi", src: "music-9" },
-        { name: "Ishq Hai", description: "sad song ost rahat fateh khan", src: "music-10" },
-        { name: "Jaan E Jahan", description: "ost sad song rahat fateh khan", src: "music-11" },
-        { name: "Jattwaad", description: "** hark cheema, gurlez akhtar gym", src: "music-12" },
-        { name: "Khaie", description: "sad song ost zeb bangash", src: "music-13" },
-        { name: "Khuda Aur Mohabbat", description: "sad song ost rahat fateh khan lofi", src: "music-14" },
-        { name: "Like Me", description: "** amrit maan gym", src: "music-15" },
-        { name: "Main Rang Sharbaton Ka", description: "sad song atif aslam lofi", src: "music-16" },
-        { name: "Meherbaan", description: "sad song ost shilpa rao, ash king ishq murshid", src: "music-17" },
-        { name: "Mera Mehboob", description: "sad song kumaar, stebin ben", src: "music-18" },
-        { name: "Mujhe Ishq Hua", description: "sad song ost wajhi farooki raah e junoon", src: "music-19" },
-        { name: "Kahani Suno", description: "sad song areeb maheer lofi", src: "music-20" },
-        { name: "O Maahi", description: "sad song arijit singh", src: "music-21" },
-        { name: "O Saathi", description: "sad song atif aslam lofi", src: "music-22" },
-        { name: "Pachtaoge", description: "sad song arijit singh", src: "music-23" },
-        { name: "Pal", description: "sad song arijit singh lofi", src: "music-24" },
-        { name: "Ruposh", description: "sad song ost wajhi farooki", src: "music-25" },
-        { name: "Shiddat", description: "sad song manan bhardwaj", src: "music-26" },
-        { name: "Ishq Mubarak", description: "sad song arijit singh lofi", src: "music-27" },
-        { name: "Tera Chehra", description: "sad song arijit singh", src: "music-28" },
-        { name: "Tere Bin", description: "sad song Shani arshad lofi", src: "music-29" },
-        { name: "Marke", description: "sad song jass manak", src: "music-30" },
-        { name: "Veham", description: "** harf cheema, gurlez akhtar", src: "music-31" },
-        { name: "Yeh Takabbur Tera", description: "sad song wajeeh uddin meer, rose mary mushtaq", src: "music-32" },
-        { name: "Jindagi Awargi Hai", description: "sad song ost Jhoom lofi", src: "music-33" },
-        { name: "2 Number De", description: "** guntaji dandiwal, gurlez akhtar gym", src: "music-34" },
-        { name: "Angli Ghumai Jaata Ne", description: "** rahul puthi", src: "music-35" },
-        { name: "Anty Bande", description: "** deepak dhillon", src: "music-36" },
-        { name: "Asla", description: "** karan randhawa gym", src: "music-37" },
-        { name: "Bachalo", description: "sad song akhil lofi", src: "music-38" },
-        { name: "Bachke Bachke", description: "** karan aujla gym", src: "music-39" },
-        { name: "Badmashi", description: "** mankirt aulakh", src: "music-40" },
-        { name: "Badnam", description: "** mankirt aulakh gym", src: "music-41" },
-        { name: "Bell Bottom", description: "** mankirt aulakh", src: "music-42" },
-        { name: "Beruzgari", description: "sad song guri dhaliwal lofi", src: "music-43" },
-        { name: "Bhabi", description: "** mankirt aulakh", src: "music-44" },
-        { name: "Big Men", description: "sad song r nait, gurlez akhtar", src: "music-45" },
-        { name: "Chandigarh", description: "** jass manak gym", src: "music-46" },
-        { name: "Channa", description: "sad song mannat noor, feroz khan lofi", src: "music-47" },
-        { name: "Chithiyaan", description: "sad song karan aujla", src: "music-48" },
-        { name: "Desi Hood", description: "** saabi bhinder, cheetah gym", src: "music-49" },
-        { name: "Devil", description: "** singga gym", src: "music-50" },
-        { name: "Dhadkan", description: "sad song mani chopra lofi", src: "music-51" },
-        { name: "Dil Todya", description: "sad song satbir aujla", src: "music-52" },
-        { name: "Dismiss 141", description: "** korala maan gym", src: "music-53" },
-        { name: "Distance Love", description: "sad song zehr vibe lofi", src: "music-54" },
-        { name: "Ever Green", description: "** jigar", src: "music-55" },
-        { name: "Filmy Scene", description: "** korala maan, gurlez akhtar", src: "music-56" },
-        { name: "Gaal Ni Kadni", description: "** parmish verma gym", src: "music-57" },
-        { name: "Gede", description: "** karan randhawa gym", src: "music-58" },
-        { name: "Guitar Sikhda", description: "** jassie gill lofi", src: "music-59" },
-        { name: "Guitar", description: "** karan randhawa", src: "music-60" }
-    ];
+        // Audio Context for typing sounds
+        let audioContext;
+        let soundEnabled = true;
 
-    // DOM Elements
-    const audio = new Audio();
-    const vinyl = document.getElementById('vinyl');
-    const label = document.getElementById('label');
-    const title = document.getElementById('title');
-    const artist = document.getElementById('artist');
-    const progressContainer = document.getElementById('progressContainer');
-    const progressBar = document.getElementById('progressBar');
-    const currentTime = document.getElementById('currentTime');
-    const duration = document.getElementById('duration');
-    const playBtn = document.getElementById('playBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const repeatBtn = document.getElementById('repeatBtn');
-    const favoriteBtn = document.getElementById('favoriteBtn');
-    const shareBtn = document.getElementById('shareBtn');
-    const volumeBtn = document.getElementById('volumeBtn');
-    const speedBtn = document.getElementById('speedBtn');
-    const songList = document.getElementById('songList');
-    const playlistTitle = document.getElementById('playlistTitle');
-    const searchInput = document.getElementById('searchInput');
-    const notification = document.getElementById('notification');
-    const menuItems = document.querySelectorAll('.menu-item');
-
-    // State
-    let currentIndex = 9; // Start with Ishq Hai
-    let isPlaying = false;
-    let isShuffle = false;
-    let repeatMode = 'off'; // off, all, one
-    let currentCategory = 'all';
-    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    let recentlyPlayed = JSON.parse(localStorage.getItem('recentlyPlayed') || '[]');
-    let volume = 1;
-    let speed = 1;
-
-    // Helper Functions
-    function getFullUrl(src) {
-        return `${BASE_URL}${src}.mp3`;
-    }
-    
-    function notify(message) {
-        notification.textContent = message;
-        notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 2000);
-    }
-
-    function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
-        return `${mins}:${secs}`;
-    }
-
-    function getArtist(description) {
-        if (!description) return '';
-        
-        const words = description.toLowerCase().split(' ');
-        for (let i = 0; i < words.length; i++) {
-            if (['sad', 'song', 'ost', '**', 'gym', 'lofi'].includes(words[i])) continue;
-            
-            if (words[i].length > 2) {
-                return words[i].charAt(0).toUpperCase() + words[i].slice(1);
+        // Initialize audio context when user interacts
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
             }
         }
-        
-        return '';
-    }
 
-    // Get next song in the current category
-    function getNextSongInCategory(index, direction = 1) {
-        // If all songs, or shuffle, just use normal behavior
-        if (currentCategory === 'all' || isShuffle) {
-            if (isShuffle) {
-                // Get a random song
-                do {
-                    index = Math.floor(Math.random() * allSongs.length);
-                } while (index === currentIndex && allSongs.length > 1);
-                return index;
+        // Play typing sound
+        function playTypingSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(440 + Math.random() * 100, audioContext.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // Play error sound
+        function playErrorSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        // Play achievement sound
+        function playAchievementSound() {
+            if (!soundEnabled || !audioContext) return;
+            
+            const noteLength = 0.2;
+            const now = audioContext.currentTime;
+            
+            // Create a series of notes to play
+            const notes = [
+                { frequency: 523.25, time: now },
+                { frequency: 659.25, time: now + noteLength },
+                { frequency: 783.99, time: now + noteLength * 2 }
+            ];
+            
+            notes.forEach(note => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(note.frequency, note.time);
+                
+                gainNode.gain.setValueAtTime(0, note.time);
+                gainNode.gain.linearRampToValueAtTime(0.2, note.time + 0.05);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, note.time + noteLength);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.start(note.time);
+                oscillator.stop(note.time + noteLength);
+            });
+        }
+
+        // App State Management
+        const AppState = {
+            isActive: false,
+            isPaused: false,
+            currentParagraph: '',
+            currentPosition: 0,
+            errors: 0,
+            totalCharacters: 0,
+            correctCharacters: 0,
+            totalWords: 0,
+            startTime: 0,
+            elapsedTime: 0,
+            timerInterval: null,
+            timeLimit: 60, // Default time limit in seconds
+            paragraphType: 'easy', // Default paragraph type
+            language: 'english', // Default language
+            highlighting: true,
+            sound: true,
+            achievements: {},
+            sessionStats: {
+                totalTests: 0,
+                totalWords: 0,
+                totalChars: 0,
+                totalErrors: 0,
+                bestWpm: 0,
+                bestAccuracy: 0
+            }
+        };
+
+        // List of paragraphs by difficulty and language
+        const paragraphs = {
+            english: {
+                easy: [
+                    "The sun rises in the east and sets in the west. Birds fly across the sky, and fish swim in the sea. Dogs bark at strangers, while cats purr when happy. People work during the day and sleep at night. Children play in parks and learn in schools.",
+                    "She walks to the store to buy some milk and bread. He likes to read books about history and science. They watch movies at the cinema every weekend. We enjoy eating ice cream during hot summer days. You should drink water to stay healthy.",
+                    "My favorite color is blue because it reminds me of the sky. Your house has a beautiful garden with many flowers. His car is red and very fast. Her phone is new and has a good camera. Our team won the game last night.",
+                    "I wake up early in the morning to exercise. You brush your teeth twice a day. He takes a shower after playing sports. She eats breakfast before going to work. We drink coffee to stay awake during long meetings."
+                ],
+                medium: [
+                    "The ancient civilization flourished along the banks of the river, developing sophisticated irrigation systems that transformed barren lands into fertile agricultural fields. Archaeological excavations have uncovered numerous artifacts that provide valuable insights into their daily lives and cultural practices.",
+                    "Quantum physics challenges our intuitive understanding of reality by revealing that particles can exist in multiple states simultaneously. The phenomenon of quantum entanglement suggests that particles can be connected in ways that defy conventional notions of space and time.",
+                    "The novel explores themes of identity and belonging through the journey of its protagonist, who navigates the complexities of cultural displacement and assimilation. Critics have praised the author's nuanced portrayal of immigrant experiences and the lyrical quality of the prose.",
+                    "Renewable energy technologies have advanced significantly in recent years, making solar and wind power increasingly competitive with traditional fossil fuels. Many countries are investing heavily in clean energy infrastructure to reduce carbon emissions and combat climate change."
+                ],
+                hard: [
+                    "The quintessential representation of postmodern literature often encapsulates a deliberate fragmentation of narrative structures, an ironic deconstruction of established paradigms, and a self-reflexive examination of the literary form itself. Contemporary critics have expounded upon the inherent paradoxes embedded within these texts, particularly highlighting the tension between intellectual skepticism and emotional resonance.",
+                    "Neuroplasticity, the brain's remarkable capacity to reorganize itself by forming new neural connections throughout life, fundamentally challenges previous scientific dogma postulating the immutability of neural architecture after critical developmental periods. Recent empirical investigations utilizing sophisticated neuroimaging techniques have elucidated the extraordinary extent to which environmental stimuli, cognitive engagement, and physical exertion can precipitate substantive structural modifications within various cerebral regions.",
+                    "The confluence of artificial intelligence and quantum computing portends a paradigmatic shift in computational capabilities, potentially enabling the resolution of currently intractable problems across diverse domains including cryptography, materials science, and pharmacological development. Concomitantly, this technological convergence raises profound ethical considerations regarding privacy, security, and the potential emergence of superintelligent systems whose decision-making processes may transcend human comprehension.",
+                    "The anthropogenic perturbation of biogeochemical cycles has precipitated unprecedented alterations in atmospheric composition, oceanic chemistry, and terrestrial ecosystems, culminating in a multifaceted environmental crisis characterized by climate destabilization, biodiversity attenuation, and resource depletion. Addressing these interconnected challenges necessitates a transdisciplinary approach integrating scientific innovation, economic recalibration, and sociopolitical transformation at both local and global scales."
+                ]
+            },
+            hinglish: {
+                easy: [
+                    "Main subah jaldi uthta hoon and exercise karta hoon. Phir breakfast karne ke baad office jata hoon. Evening mein main park mein walk karta hoon. Dinner ke baad, main TV dekhta hoon or book padhta hoon. Raat ko jaldi sota hoon.",
+                    "Mera favorite color blue hai kyunki yeh mujhe sky ki yaad dilata hai. Tumhare ghar mein ek beautiful garden hai with many flowers. Uski car red hai aur very fast hai. Uska phone new hai aur ek good camera hai. Hamari team ne kal raat game jeet liya.",
+                    "Aaj weather bahut acha hai. Sky clear hai aur sun shine kar raha hai. Main market ja raha hoon shopping karne. Shaam ko friends ke saath coffee peene ka plan hai. Weekend par hum movie dekhne jayenge.",
+                    "India mein bahut se festivals celebrate kiye jate hain. Diwali lights aur sweets ke liye famous hai. Holi colors ka festival hai. Christmas par log gifts exchange karte hain. New Year celebration mein log party karte hain."
+                ],
+                medium: [
+                    "Technology ne hamari daily life ko completely transform kar diya hai. Smartphones aur internet ke through, hum instantly kisi bhi information ko access kar sakte hain. Social media platforms ne communication ko revolutionize kiya hai, lekin excessive screen time health problems bhi cause kar sakta hai.",
+                    "Climate change ek global challenge hai jo immediate attention require karta hai. Rising temperatures, melting glaciers, aur extreme weather events clearly indicate ke hamein sustainable practices adopt karne ki zaroorat hai. Renewable energy sources jaise solar aur wind power future ke liye promising solutions hain.",
+                    "Education system mein digital transformation se traditional classroom learning complement ho rahi hai. Online courses aur interactive learning platforms students ko flexibility provide karte hain. Lekin technology ke saath, critical thinking aur practical skills develop karna equally important hai.",
+                    "Indian cuisine worldwide famous hai apne unique flavors aur diverse recipes ke liye. Spices ka perfect combination dishes ko extraordinary taste deta hai. Street food se lekar royal delicacies tak, har dish apni special story aur cultural significance rakhti hai."
+                ],
+                hard: [
+                    "Artificial Intelligence ke exponential development ne numerous industries mein revolutionary transformation trigger kiya hai, simultaneously ethical considerations aur potential existential risks ke complex debates ko precipitate karte hue. Machine learning algorithms continuously evolve ho rahe hain, increasingly sophisticated pattern recognition capabilities demonstrate kar rahe hain jo previously exclusively human cognition ke domain mein considered kiye jate the.",
+                    "Quantum computing ke emerging field mein, researchers conventional binary systems ki fundamental limitations ko transcend karne ki koshish kar rahe hain, exponentially accelerated computational capabilities achieve karne ke liye jo currently intractable mathematical problems ko solve kar sakti hain. Quantum entanglement aur superposition ke principles traditional physics ke established laws ko challenge karte hain.",
+                    "Contemporary geopolitical landscape increasingly multipolar ho raha hai, traditional power structures dissolve ho rahe hain aur regional alliances reconfigure ho rahe hain global economic interdependence ke context mein. International relations ke theoretical frameworks inadequate ho gaye hain emerging complex realities ko comprehensively explain karne ke liye jo digital sovereignty, cyber warfare, aur transnational non-state actors ke issues ko encompass karti hain.",
+                    "Climate crisis ke accelerating impacts ecological systems par profound transformative effects exert kar rahe hain, biodiversity loss, habitat destruction, aur resource scarcity ko exacerbate kar rahe hain multiple geographical regions mein. Sustainable development initiatives holistic approaches require karti hain jo environmental conservation, economic viability, aur social equity ke interconnected dimensions ko simultaneously address karen."
+                ]
+            }
+        };
+
+        // List of achievements
+        const achievementsList = [
+            { id: 'first_test', name: 'First Steps', description: 'Complete your first typing test', icon: 'fa-shoe-prints', unlocked: false },
+            { id: 'wpm_30', name: 'Steady Pace', description: 'Reach 30 WPM', icon: 'fa-tachometer-alt', unlocked: false },
+            { id: 'wpm_50', name: 'Speed Demon', description: 'Reach 50 WPM', icon: 'fa-bolt', unlocked: false },
+            { id: 'wpm_70', name: 'Typing Master', description: 'Reach 70 WPM', icon: 'fa-crown', unlocked: false },
+            { id: 'wpm_100', name: 'Keyboard Virtuoso', description: 'Reach 100 WPM', icon: 'fa-fire', unlocked: false },
+            { id: 'accuracy_95', name: 'Sharp Shooter', description: 'Achieve 95% accuracy', icon: 'fa-bullseye', unlocked: false },
+            { id: 'accuracy_98', name: 'Precision Master', description: 'Achieve 98% accuracy', icon: 'fa-crosshairs', unlocked: false },
+            { id: 'accuracy_100', name: 'Perfect Precision', description: 'Achieve 100% accuracy', icon: 'fa-check-circle', unlocked: false },
+            { id: 'words_100', name: 'Wordsmith', description: 'Type 100 words in total', icon: 'fa-book', unlocked: false },
+            { id: 'words_500', name: 'Word Wizard', description: 'Type 500 words in total', icon: 'fa-book-open', unlocked: false },
+            { id: 'words_1000', name: 'Lexicon Legend', description: 'Type 1000 words in total', icon: 'fa-atlas', unlocked: false },
+            { id: 'chars_5000', name: 'Character Builder', description: 'Type 5000 characters in total', icon: 'fa-keyboard', unlocked: false },
+            { id: 'chars_10000', name: 'Key Crusher', description: 'Type 10000 characters in total', icon: 'fa-hand-point-up', unlocked: false },
+            { id: 'tests_5', name: 'Dedicated Student', description: 'Complete 5 typing tests', icon: 'fa-graduation-cap', unlocked: false },
+            { id: 'tests_10', name: 'Typing Enthusiast', description: 'Complete 10 typing tests', icon: 'fa-user-graduate', unlocked: false },
+            { id: 'tests_25', name: 'Keyboard Warrior', description: 'Complete 25 typing tests', icon: 'fa-fist-raised', unlocked: false },
+            { id: 'difficulty_medium', name: 'Level Up', description: 'Complete a test on medium difficulty', icon: 'fa-arrow-up', unlocked: false },
+            { id: 'difficulty_hard', name: 'Challenge Accepted', description: 'Complete a test on hard difficulty', icon: 'fa-chess-rook', unlocked: false },
+            { id: 'time_30s', name: 'Quick Sprint', description: 'Complete a 30-second test', icon: 'fa-hourglass-start', unlocked: false },
+            { id: 'time_2m', name: 'Endurance Run', description: 'Complete a 2-minute test', icon: 'fa-hourglass-half', unlocked: false },
+            { id: 'time_5m', name: 'Marathon Typer', description: 'Complete a 5-minute test', icon: 'fa-hourglass-end', unlocked: false },
+            { id: 'no_errors_easy', name: 'Flawless Beginner', description: 'Complete an easy test with no errors', icon: 'fa-star', unlocked: false },
+            { id: 'no_errors_medium', name: 'Flawless Intermediate', description: 'Complete a medium test with no errors', icon: 'fa-star-half-alt', unlocked: false },
+            { id: 'no_errors_hard', name: 'Flawless Expert', description: 'Complete a hard test with no errors', icon: 'fa-stars', unlocked: false },
+            { id: 'hinglish_test', name: 'Bilingual Typer', description: 'Complete a test in Hinglish', icon: 'fa-language', unlocked: false },
+            { id: 'evening_test', name: 'Night Owl', description: 'Complete a test after 8 PM', icon: 'fa-moon', unlocked: false },
+            { id: 'morning_test', name: 'Early Bird', description: 'Complete a test before 8 AM', icon: 'fa-sun', unlocked: false },
+            { id: 'consistent_3', name: 'Consistent Effort', description: 'Complete tests on 3 consecutive days', icon: 'fa-calendar-check', unlocked: false },
+            { id: 'consecutive_tests_3', name: 'Momentum Builder', description: 'Complete 3 tests in a row', icon: 'fa-redo', unlocked: false },
+            { id: 'sound_off', name: 'Silent Operator', description: 'Complete a test with sound off', icon: 'fa-volume-mute', unlocked: false },
+            { id: 'highlighting_off', name: 'Blind Typist', description: 'Complete a test with highlighting off', icon: 'fa-eye-slash', unlocked: false },
+            { id: 'settings_changed', name: 'Customizer', description: 'Change settings for the first time', icon: 'fa-sliders-h', unlocked: false },
+            { id: 'all_time_options', name: 'Time Explorer', description: 'Try all time limit options', icon: 'fa-clock', unlocked: false },
+            { id: 'all_difficulties', name: 'Master of All', description: 'Complete tests at all difficulty levels', icon: 'fa-certificate', unlocked: false },
+            { id: 'view_achievements', name: 'Trophy Hunter', description: 'View your achievements', icon: 'fa-trophy', unlocked: false }
+        ];
+
+        // DOM Elements
+        const elements = {
+            startScreen: document.getElementById('startScreen'),
+            startBtn: document.getElementById('startBtn'),
+            paragraphText: document.getElementById('paragraphText'),
+            typingInput: document.getElementById('typingInput'),
+            timer: document.getElementById('timer'),
+            wpm: document.getElementById('wpm'),
+            accuracy: document.getElementById('accuracy'),
+            wordsTyped: document.getElementById('wordsTyped'),
+            charsTyped: document.getElementById('charsTyped'),
+            progressBar: document.getElementById('progressBar'),
+            pauseBtn: document.getElementById('pauseBtn'),
+            restartBtn: document.getElementById('restartBtn'),
+            achievementsBtn: document.getElementById('achievementsBtn'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            achievementsModal: document.getElementById('achievementsModal'),
+            settingsModal: document.getElementById('settingsModal'),
+            closeAchievementsBtn: document.getElementById('closeAchievementsBtn'),
+            closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+            achievementsGrid: document.getElementById('achievementsGrid'),
+            achievementNotification: document.getElementById('achievementNotification'),
+            notificationDesc: document.getElementById('notificationDesc'),
+            resultScreen: document.getElementById('resultScreen'),
+            resultWpm: document.getElementById('resultWpm'),
+            resultAccuracy: document.getElementById('resultAccuracy'),
+            resultWords: document.getElementById('resultWords'),
+            resultChars: document.getElementById('resultChars'),
+            newAchievements: document.getElementById('newAchievements'),
+            returnHomeBtn: document.getElementById('returnHomeBtn'),
+            tryAgainBtn: document.getElementById('tryAgainBtn')
+        };
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', initApp);
+        elements.startBtn.addEventListener('click', startApp);
+        elements.typingInput.addEventListener('input', handleTyping);
+        elements.pauseBtn.addEventListener('click', togglePause);
+        elements.restartBtn.addEventListener('click', restartTest);
+        elements.achievementsBtn.addEventListener('click', showAchievements);
+        elements.settingsBtn.addEventListener('click', showSettings);
+        elements.closeAchievementsBtn.addEventListener('click', hideAchievements);
+        elements.closeSettingsBtn.addEventListener('click', hideSettings);
+        elements.returnHomeBtn.addEventListener('click', returnToHome);
+        elements.tryAgainBtn.addEventListener('click', restartTest);
+
+        // Add event listeners for settings options
+        document.querySelectorAll('.toggle-option, .select-option').forEach(option => {
+            option.addEventListener('click', updateSetting);
+        });
+
+        // Initialize app
+        function initApp() {
+            // Load saved achievements from localStorage
+            loadAchievements();
+            loadSessionStats();
+            
+            // Initialize UI
+            updateSettingsUI();
+        }
+
+        // Start the typing test application
+        function startApp() {
+            initAudio(); // Initialize audio context
+            
+            // Hide start screen
+            elements.startScreen.classList.add('hidden');
+            
+            // Start the test
+            startTest();
+            
+            // Focus typing input
+            elements.typingInput.focus();
+        }
+
+        // Start a new typing test
+        function startTest() {
+            // Reset state
+            AppState.isActive = true;
+            AppState.isPaused = false;
+            AppState.currentPosition = 0;
+            AppState.errors = 0;
+            AppState.totalCharacters = 0;
+            AppState.correctCharacters = 0;
+            AppState.totalWords = 0;
+            AppState.elapsedTime = 0;
+            
+            // Update UI
+            elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            elements.resultScreen.classList.remove('active');
+            
+            // Get new paragraph
+            loadNewParagraph();
+            
+            // Start timer
+            startTimer();
+            
+            // Update stats
+            updateStats();
+        }
+
+        // Load a new paragraph for typing
+        function loadNewParagraph() {
+            // Get paragraphs based on current settings
+            const availableParagraphs = paragraphs[AppState.language][AppState.paragraphType];
+            
+            // Select a random paragraph
+            const randomIndex = Math.floor(Math.random() * availableParagraphs.length);
+            AppState.currentParagraph = availableParagraphs[randomIndex];
+            
+            // Render paragraph for typing
+            renderParagraph();
+        }
+
+        // Render the paragraph for typing
+        function renderParagraph() {
+            elements.paragraphText.innerHTML = '';
+            
+            // Split paragraph into characters and create spans
+            AppState.currentParagraph.split('').forEach((char, index) => {
+                const charSpan = document.createElement('span');
+                charSpan.textContent = char;
+                if (index === 0) charSpan.classList.add('current');
+                elements.paragraphText.appendChild(charSpan);
+            });
+        }
+
+        // Start the timer for the typing test
+        function startTimer() {
+            // Clear any existing timer
+            clearInterval(AppState.timerInterval);
+            
+            // Set start time
+            AppState.startTime = Date.now();
+            
+            // Update timer display
+            updateTimerDisplay();
+            
+            // Start interval to update timer
+            AppState.timerInterval = setInterval(() => {
+                if (!AppState.isPaused) {
+                    AppState.elapsedTime = Math.floor((Date.now() - AppState.startTime) / 1000);
+                    updateTimerDisplay();
+                    
+                    // Check if time is up
+                    if (AppState.elapsedTime >= AppState.timeLimit) {
+                        endTest();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update the timer display
+        function updateTimerDisplay() {
+            const timeLeft = Math.max(0, AppState.timeLimit - AppState.elapsedTime);
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            elements.timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update progress bar
+            const progressPercentage = (AppState.elapsedTime / AppState.timeLimit) * 100;
+            elements.progressBar.style.width = `${Math.min(100, progressPercentage)}%`;
+        }
+
+        // Handle typing input
+        function handleTyping(e) {
+            if (!AppState.isActive || AppState.isPaused) return;
+            
+            const inputText = e.target.value;
+            const currentChar = inputText.charAt(inputText.length - 1);
+            
+            // Get the current character in the paragraph
+            const paragraphChar = AppState.currentParagraph.charAt(AppState.currentPosition);
+            
+            // Check if the typed character matches the current character
+            const isCorrect = currentChar === paragraphChar;
+            
+            // Update character spans
+            const charSpans = elements.paragraphText.querySelectorAll('span');
+            
+            // Remove current class from previous character
+            charSpans[AppState.currentPosition].classList.remove('current');
+            
+            // Add appropriate class based on correctness
+            if (AppState.highlighting) {
+                charSpans[AppState.currentPosition].classList.add(isCorrect ? 'correct' : 'incorrect');
+            }
+            
+            // Move to next character
+            AppState.currentPosition++;
+            
+            // Update character counts
+            AppState.totalCharacters++;
+            if (isCorrect) {
+                AppState.correctCharacters++;
+                playTypingSound();
             } else {
-                // Get next/prev song in order
-                return (index + direction + allSongs.length) % allSongs.length;
+                AppState.errors++;
+                playErrorSound();
+            }
+            
+            // Check if at end of paragraph
+            if (AppState.currentPosition >= AppState.currentParagraph.length) {
+                endTest();
+                return;
+            }
+            
+            // Add current class to next character
+            charSpans[AppState.currentPosition].classList.add('current');
+            
+            // Auto-scroll paragraph if needed
+            const currentCharElement = charSpans[AppState.currentPosition];
+            const containerRect = elements.paragraphText.getBoundingClientRect();
+            const charRect = currentCharElement.getBoundingClientRect();
+            
+            if (charRect.bottom > containerRect.bottom || charRect.top < containerRect.top) {
+                currentCharElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            
+            // Count words
+            if (paragraphChar === ' ' || paragraphChar === '\n') {
+                AppState.totalWords++;
+            }
+            
+            // Clear input for next character
+            elements.typingInput.value = '';
+            
+            // Update stats
+            updateStats();
+            
+            // Update progress based on paragraph completion
+            const progressPercentage = (AppState.currentPosition / AppState.currentParagraph.length) * 100;
+            if (progressPercentage > (AppState.elapsedTime / AppState.timeLimit) * 100) {
+                elements.progressBar.style.width = `${progressPercentage}%`;
             }
         }
-        
-        // For specific categories, find the next/prev song in that category
-        let categoryFilter;
-        switch(currentCategory) {
-            case 'favorites':
-                categoryFilter = song => favorites.includes(song.src);
-                break;
-            case 'recent':
-                return null; // Special case handled separately
-            case 'sad':
-                categoryFilter = song => song.description.toLowerCase().includes('sad song');
-                break;
-            case 'party':
-                categoryFilter = song => song.description.toLowerCase().includes('**');
-                break;
-            case 'ost':
-                categoryFilter = song => song.description.toLowerCase().includes('ost');
-                break;
-            case 'gym':
-                categoryFilter = song => song.description.toLowerCase().includes('gym');
-                break;
-            case 'lofi':
-                categoryFilter = song => song.description.toLowerCase().includes('lofi');
-                break;
-            default:
-                return (index + direction + allSongs.length) % allSongs.length;
+
+        // Update typing statistics
+        function updateStats() {
+            // Calculate words per minute
+            const minutes = AppState.elapsedTime > 0 ? AppState.elapsedTime / 60 : 0.01;
+            const wpm = Math.round(AppState.totalWords / minutes);
+            
+            // Calculate accuracy
+            const accuracy = AppState.totalCharacters > 0 
+                ? Math.round((AppState.correctCharacters / AppState.totalCharacters) * 100) 
+                : 0;
+            
+            // Update stat displays
+            elements.wpm.textContent = wpm;
+            elements.accuracy.textContent = `${accuracy}%`;
+            elements.wordsTyped.textContent = AppState.totalWords;
+            elements.charsTyped.textContent = AppState.totalCharacters;
         }
-        
-        // Get all songs in this category
-        const categorySongs = allSongs.filter(categoryFilter);
-        if (categorySongs.length === 0) return null;
-        
-        // Find the current song's index in this category
-        const currentSong = allSongs[currentIndex];
-        const categoryIndex = categorySongs.findIndex(song => song.src === currentSong.src);
-        
-        // If not found in this category, return the first song
-        if (categoryIndex === -1) return allSongs.indexOf(categorySongs[0]);
-        
-        // Get the next/prev song in this category
-        const nextCategoryIndex = (categoryIndex + direction + categorySongs.length) % categorySongs.length;
-        const nextSong = categorySongs[nextCategoryIndex];
-        
-        // Return the global index
-        return allSongs.indexOf(nextSong);
-    }
 
-    // Player Functions
-    function loadSong(index) {
-        if (index < 0 || index >= allSongs.length) return;
-        
-        currentIndex = index;
-        const song = allSongs[currentIndex];
-        
-        title.textContent = song.name;
-        label.textContent = song.name.split(' ')[0]; // First word only for label
-        artist.textContent = getArtist(song.description);
-        
-        audio.src = getFullUrl(song.src);
-        audio.playbackRate = speed;
-        audio.volume = volume;
-        
-        // Add to recently played
-        const foundIndex = recentlyPlayed.findIndex(src => src === song.src);
-        if (foundIndex !== -1) {
-            recentlyPlayed.splice(foundIndex, 1);
-        }
-        recentlyPlayed.unshift(song.src);
-        if (recentlyPlayed.length > 10) recentlyPlayed.pop();
-        localStorage.setItem('recentlyPlayed', JSON.stringify(recentlyPlayed));
-        
-        // Update favorite button
-        updateFavoriteButton();
-        
-        // Reset progress bar
-        progressBar.style.width = '0%';
-        currentTime.textContent = '0:00';
-        duration.textContent = '0:00';
-        
-        // Update active song in list
-        updateActiveSong();
-    }
-
-    function playSong() {
-        isPlaying = true;
-        vinyl.classList.add('playing');
-        playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        
-        audio.play().catch(() => {
-            notify("Error playing song");
-        });
-    }
-
-    function pauseSong() {
-        isPlaying = false;
-        vinyl.classList.remove('playing');
-        playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        
-        audio.pause();
-    }
-
-    function nextSong() {
-        // If in a specific category, find next song in that category
-        const nextIndex = getNextSongInCategory(currentIndex, 1);
-        
-        // Special case for recently played
-        if (currentCategory === 'recent') {
-            const recentIndex = recentlyPlayed.indexOf(allSongs[currentIndex].src);
-            if (recentIndex === -1 || recentIndex === recentlyPlayed.length - 1) {
-                // Current song not in recent list or last in list
-                if (recentlyPlayed.length > 0) {
-                    const firstRecentSong = allSongs.find(song => song.src === recentlyPlayed[0]);
-                    if (firstRecentSong) loadSong(allSongs.indexOf(firstRecentSong));
-                }
+        // Toggle pause/resume
+        function togglePause() {
+            if (!AppState.isActive) return;
+            
+            AppState.isPaused = !AppState.isPaused;
+            
+            if (AppState.isPaused) {
+                elements.pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
             } else {
-                // Go to next recent song
-                const nextRecentSrc = recentlyPlayed[recentIndex + 1];
-                const nextRecentSong = allSongs.find(song => song.src === nextRecentSrc);
-                if (nextRecentSong) loadSong(allSongs.indexOf(nextRecentSong));
-            }
-        } else if (nextIndex !== null) {
-            loadSong(nextIndex);
-        }
-        
-        if (isPlaying) playSong();
-    }
-
-    function prevSong() {
-        if (audio.currentTime > 3) {
-            audio.currentTime = 0;
-            return;
-        }
-        
-        // If in a specific category, find prev song in that category
-        const prevIndex = getNextSongInCategory(currentIndex, -1);
-        
-        // Special case for recently played
-        if (currentCategory === 'recent') {
-            const recentIndex = recentlyPlayed.indexOf(allSongs[currentIndex].src);
-            if (recentIndex <= 0) {
-                // Current song not in recent list or first in list
-                if (recentlyPlayed.length > 0) {
-                    const lastRecentSong = allSongs.find(song => song.src === recentlyPlayed[recentlyPlayed.length - 1]);
-                    if (lastRecentSong) loadSong(allSongs.indexOf(lastRecentSong));
-                }
-            } else {
-                // Go to previous recent song
-                const prevRecentSrc = recentlyPlayed[recentIndex - 1];
-                const prevRecentSong = allSongs.find(song => song.src === prevRecentSrc);
-                if (prevRecentSong) loadSong(allSongs.indexOf(prevRecentSong));
-            }
-        } else if (prevIndex !== null) {
-            loadSong(prevIndex);
-        }
-        
-        if (isPlaying) playSong();
-    }
-
-    function toggleFavorite() {
-        const song = allSongs[currentIndex];
-        const isFavorite = favorites.includes(song.src);
-        
-        if (isFavorite) {
-            favorites = favorites.filter(src => src !== song.src);
-            favoriteBtn.innerHTML = '<i class="far fa-heart"></i><span>Favorite</span>';
-            favoriteBtn.classList.remove('active');
-            notify("Removed from favorites");
-        } else {
-            favorites.push(song.src);
-            favoriteBtn.innerHTML = '<i class="fas fa-heart"></i><span>Favorite</span>';
-            favoriteBtn.classList.add('active');
-            notify("Added to favorites");
-        }
-        
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        
-        if (currentCategory === 'favorites') {
-            loadCategory('favorites');
-        }
-    }
-
-    function updateFavoriteButton() {
-        const song = allSongs[currentIndex];
-        const isFavorite = favorites.includes(song.src);
-        
-        if (isFavorite) {
-            favoriteBtn.innerHTML = '<i class="fas fa-heart"></i><span>Favorite</span>';
-            favoriteBtn.classList.add('active');
-        } else {
-            favoriteBtn.innerHTML = '<i class="far fa-heart"></i><span>Favorite</span>';
-            favoriteBtn.classList.remove('active');
-        }
-    }
-
-    function shareSong() {
-        const song = allSongs[currentIndex];
-        
-        navigator.clipboard.writeText(getFullUrl(song.src))
-            .then(() => notify("Song link copied"))
-            .catch(() => notify("Failed to copy link"));
-    }
-
-    function adjustVolume() {
-        volume = (volume + 0.2) % 1.2;
-        if (volume > 1) volume = 0;
-        
-        audio.volume = volume;
-        
-        let volumeIcon;
-        if (volume === 0) {
-            volumeIcon = 'volume-mute';
-        } else if (volume <= 0.4) {
-            volumeIcon = 'volume-down';
-        } else {
-            volumeIcon = 'volume-up';
-        }
-        
-        volumeBtn.innerHTML = `<i class="fas fa-${volumeIcon}"></i><span>Volume: ${Math.round(volume * 100)}%</span>`;
-        notify(`Volume: ${Math.round(volume * 100)}%`);
-    }
-
-    function adjustSpeed() {
-        const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
-        const currentIndex = speeds.indexOf(speed);
-        const nextIndex = (currentIndex + 1) % speeds.length;
-        speed = speeds[nextIndex];
-        
-        audio.playbackRate = speed;
-        speedBtn.innerHTML = `<i class="fas fa-tachometer-alt"></i><span>Speed: ${speed}x</span>`;
-        notify(`Speed: ${speed}x`);
-    }
-
-    function updateProgress() {
-        const { currentTime: time, duration: total } = audio;
-        
-        if (total) {
-            const percent = (time / total) * 100;
-            progressBar.style.width = `${percent}%`;
-            
-            currentTime.textContent = formatTime(time);
-            duration.textContent = formatTime(total);
-        }
-    }
-
-    function setProgress(e) {
-        const width = progressContainer.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audio.duration;
-        
-        if (duration) {
-            audio.currentTime = (clickX / width) * duration;
-        }
-    }
-
-    function toggleShuffle() {
-        isShuffle = !isShuffle;
-        shuffleBtn.classList.toggle('active');
-        notify(isShuffle ? 'Shuffle: On' : 'Shuffle: Off');
-    }
-
-    function toggleRepeat() {
-        if (repeatMode === 'off') {
-            repeatMode = 'all';
-            repeatBtn.classList.add('active');
-            notify('Repeat: All');
-        } else if (repeatMode === 'all') {
-            repeatMode = 'one';
-            repeatBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
-            notify('Repeat: One');
-        } else {
-            repeatMode = 'off';
-            repeatBtn.innerHTML = '<i class="fas fa-redo"></i>';
-            repeatBtn.classList.remove('active');
-            notify('Repeat: Off');
-        }
-    }
-
-    function loadCategory(category) {
-        currentCategory = category;
-        
-        menuItems.forEach(item => {
-            item.classList.remove('active');
-            if (item.dataset.category === category) {
-                item.classList.add('active');
-            }
-        });
-        
-        switch(category) {
-            case 'all': playlistTitle.textContent = 'All Songs'; break;
-            case 'favorites': playlistTitle.textContent = 'Favorites'; break;
-            case 'recent': playlistTitle.textContent = 'Recently Played'; break;
-            case 'sad': playlistTitle.textContent = 'Sad Songs'; break;
-            case 'party': playlistTitle.textContent = 'Party Songs'; break;
-            case 'ost': playlistTitle.textContent = 'OST'; break;
-            case 'gym': playlistTitle.textContent = 'Gym Songs'; break;
-            case 'lofi': playlistTitle.textContent = 'Lofi'; break;
-            default: playlistTitle.textContent = 'All Songs';
-        }
-        
-        let songs;
-        switch(category) {
-            case 'all':
-                songs = [...allSongs];
-                break;
-            case 'favorites':
-                songs = allSongs.filter(song => favorites.includes(song.src));
-                break;
-            case 'recent':
-                songs = recentlyPlayed.map(src => 
-                    allSongs.find(song => song.src === src)
-                ).filter(Boolean);
-                break;
-            case 'sad':
-                songs = allSongs.filter(song => 
-                    song.description.toLowerCase().includes('sad song')
-                );
-                break;
-            case 'party':
-                songs = allSongs.filter(song => 
-                    song.description.toLowerCase().includes('**')
-                );
-                break;
-            case 'ost':
-                songs = allSongs.filter(song => 
-                    song.description.toLowerCase().includes('ost')
-                );
-                break;
-            case 'gym':
-                songs = allSongs.filter(song => 
-                    song.description.toLowerCase().includes('gym')
-                );
-                break;
-            case 'lofi':
-                songs = allSongs.filter(song => 
-                    song.description.toLowerCase().includes('lofi')
-                );
-                break;
-            default:
-                songs = [...allSongs];
-        }
-        
-        renderSongList(songs);
-    }
-
-    function renderSongList(songs) {
-        songList.innerHTML = '';
-        
-        if (songs.length === 0) {
-            songList.innerHTML = '<div style="text-align: center; padding: 10px; opacity: 0.7;">No songs found</div>';
-            return;
-        }
-        
-        songs.forEach((song, index) => {
-            const globalIndex = allSongs.findIndex(s => s.src === song.src);
-            const isActive = globalIndex === currentIndex;
-            const isFav = favorites.includes(song.src);
-            
-            const songItem = document.createElement('div');
-            songItem.className = `song-item${isActive ? ' active' : ''}`;
-            songItem.innerHTML = `
-                <div class='song-number'>${index + 1}</div>
-                <div class='song-details'>
-                    <div class='song-name'>${song.name}</div>
-                    <div class='song-artist-small'>${getArtist(song.description)}</div>
-                </div>
-                <div class='song-actions'>
-                    <button class='song-btn favorite-btn' title='Favorite'>
-                        <i class='${isFav ? 'fas' : 'far'} fa-heart'></i>
-                    </button>
-                    <button class='song-btn share-btn' title='Share'>
-                        <i class='fas fa-share-alt'></i>
-                    </button>
-                    <button class='song-btn play-btn' title='Play'>
-                        <i class='fas fa-play'></i>
-                    </button>
-                </div>
-            `;
-            
-            // Play song on click
-            songItem.addEventListener('click', function() {
-                loadSong(globalIndex);
-                playSong();
-            });
-            
-            // Song controls
-            const playBtn = songItem.querySelector('.play-btn');
-            playBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                loadSong(globalIndex);
-                playSong();
-            });
-            
-            // Favorite button
-            const favBtn = songItem.querySelector('.favorite-btn');
-            favBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                if (favorites.includes(song.src)) {
-                    favorites = favorites.filter(src => src !== song.src);
-                    favBtn.innerHTML = '<i class="far fa-heart"></i>';
-                    notify("Removed from favorites");
-                } else {
-                    favorites.push(song.src);
-                    favBtn.innerHTML = '<i class="fas fa-heart"></i>';
-                    notify("Added to favorites");
-                }
-                
-                localStorage.setItem('favorites', JSON.stringify(favorites));
-                
-                if (globalIndex === currentIndex) {
-                    updateFavoriteButton();
-                }
-                
-                if (currentCategory === 'favorites') {
-                    loadCategory('favorites');
-                }
-            });
-            
-            // Share button
-            const shareBtn = songItem.querySelector('.share-btn');
-            shareBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                
-                navigator.clipboard.writeText(getFullUrl(song.src))
-                    .then(() => notify("Link copied"))
-                    .catch(() => notify("Failed to copy"));
-            });
-            
-            songList.appendChild(songItem);
-        });
-    }
-
-    function updateActiveSong() {
-        document.querySelectorAll('.song-item').forEach(item => {
-            item.classList.remove('active');
-        });
-        
-        const items = Array.from(document.querySelectorAll('.song-item'));
-        for (let i = 0; i < items.length; i++) {
-            const songName = items[i].querySelector('.song-name').textContent;
-            if (songName === allSongs[currentIndex].name) {
-                items[i].classList.add('active');
-                items[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                break;
+                elements.pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+                // Update start time to account for pause duration
+                AppState.startTime = Date.now() - (AppState.elapsedTime * 1000);
+                elements.typingInput.focus();
             }
         }
-    }
 
-    function search() {
-        const query = searchInput.value.toLowerCase();
-        
-        if (!query) {
-            loadCategory(currentCategory);
-            return;
+        // Restart the test
+        function restartTest() {
+            // Stop current test
+            clearInterval(AppState.timerInterval);
+            
+            // Hide result screen if visible
+            elements.resultScreen.classList.remove('active');
+            
+            // Start a new test
+            startTest();
+            
+            // Focus typing input
+            elements.typingInput.focus();
         }
-        
-        const results = allSongs.filter(song => 
-            song.name.toLowerCase().includes(query) || 
-            song.description.toLowerCase().includes(query)
-        );
-        
-        playlistTitle.textContent = `Search: "${query}"`;
-        renderSongList(results);
-    }
 
-    // Event Listeners
-    playBtn.addEventListener('click', function() {
-        if (isPlaying) pauseSong();
-        else playSong();
-    });
-    prevBtn.addEventListener('click', prevSong);
-    nextBtn.addEventListener('click', nextSong);
-    shuffleBtn.addEventListener('click', toggleShuffle);
-    repeatBtn.addEventListener('click', toggleRepeat);
-    favoriteBtn.addEventListener('click', toggleFavorite);
-    shareBtn.addEventListener('click', shareSong);
-    volumeBtn.addEventListener('click', adjustVolume);
-    speedBtn.addEventListener('click', adjustSpeed);
-    progressContainer.addEventListener('click', setProgress);
-    
-    audio.addEventListener('timeupdate', updateProgress);
-    audio.addEventListener('ended', function() {
-        if (repeatMode === 'one') {
-            audio.currentTime = 0;
-            audio.play();
-        } else if (repeatMode === 'all' || currentIndex < allSongs.length - 1) {
-            nextSong();
-        } else {
-            pauseSong();
-            audio.currentTime = 0;
+        // End the typing test
+        function endTest() {
+            // Stop the timer
+            clearInterval(AppState.timerInterval);
+            
+            // Mark test as inactive
+            AppState.isActive = false;
+            
+            // Calculate final stats
+            const minutes = AppState.elapsedTime > 0 ? AppState.elapsedTime / 60 : 0.01;
+            const wpm = Math.round(AppState.totalWords / minutes);
+            const accuracy = AppState.totalCharacters > 0 
+                ? Math.round((AppState.correctCharacters / AppState.totalCharacters) * 100) 
+                : 0;
+            
+            // Update session stats
+            AppState.sessionStats.totalTests++;
+            AppState.sessionStats.totalWords += AppState.totalWords;
+            AppState.sessionStats.totalChars += AppState.totalCharacters;
+            AppState.sessionStats.totalErrors += AppState.errors;
+            
+            if (wpm > AppState.sessionStats.bestWpm) {
+                AppState.sessionStats.bestWpm = wpm;
+            }
+            
+            if (accuracy > AppState.sessionStats.bestAccuracy) {
+                AppState.sessionStats.bestAccuracy = accuracy;
+            }
+            
+            // Save session stats
+            saveSessionStats();
+            
+            // Check for achievements
+            const newAchievements = checkAchievements(wpm, accuracy);
+            
+            // Update result screen
+            elements.resultWpm.textContent = wpm;
+            elements.resultAccuracy.textContent = `${accuracy}%`;
+            elements.resultWords.textContent = AppState.totalWords;
+            elements.resultChars.textContent = AppState.totalCharacters;
+            
+            // Show new achievements on result screen
+            elements.newAchievements.innerHTML = '';
+            if (newAchievements.length > 0) {
+                const achievementsTitle = document.createElement('h3');
+                achievementsTitle.textContent = 'New Achievements:';
+                achievementsTitle.style.margin = '20px 0 10px';
+                elements.newAchievements.appendChild(achievementsTitle);
+                
+                const achievementsList = document.createElement('div');
+                achievementsList.style.display = 'flex';
+                achievementsList.style.flexWrap = 'wrap';
+                achievementsList.style.gap = '10px';
+                achievementsList.style.justifyContent = 'center';
+                
+                newAchievements.forEach(achievement => {
+                    const achievementItem = document.createElement('div');
+                    achievementItem.style.background = 'rgba(255, 255, 255, 0.5)';
+                    achievementItem.style.borderRadius = '12px';
+                    achievementItem.style.padding = '10px';
+                    achievementItem.style.display = 'flex';
+                    achievementItem.style.alignItems = 'center';
+                    achievementItem.style.gap = '8px';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = `fas ${achievement.icon}`;
+                    icon.style.color = 'var(--primary-color)';
+                    icon.style.fontSize = '1.2rem';
+                    
+                    const name = document.createElement('span');
+                    name.textContent = achievement.name;
+                    name.style.fontWeight = '500';
+                    
+                    achievementItem.appendChild(icon);
+                    achievementItem.appendChild(name);
+                    achievementsList.appendChild(achievementItem);
+                });
+                
+                elements.newAchievements.appendChild(achievementsList);
+            }
+            
+            // Show result screen
+            elements.resultScreen.classList.add('active');
         }
-    });
-    
-    searchInput.addEventListener('input', search);
-    
-    menuItems.forEach(item => {
-        item.addEventListener('click', function() {
-            loadCategory(item.dataset.category);
-        });
-    });
-    
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(e) {
-        if (document.activeElement.tagName === 'INPUT') return;
-        
-        switch (e.code) {
-            case 'Space':
-                e.preventDefault();
-                if (isPlaying) pauseSong();
-                else playSong();
-                break;
-            case 'ArrowLeft':
-                e.preventDefault();
-                audio.currentTime -= 10;
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                audio.currentTime += 10;
-                break;
-            case 'ArrowUp':
-                e.preventDefault();
-                volume = Math.min(1, volume + 0.1);
-                audio.volume = volume;
-                notify(`Volume: ${Math.round(volume * 100)}%`);
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                volume = Math.max(0, volume - 0.1);
-                audio.volume = volume;
-                notify(`Volume: ${Math.round(volume * 100)}%`);
-                break;
+
+        // Show achievements modal
+        function showAchievements() {
+            elements.achievementsModal.classList.add('active');
+            renderAchievements();
+            
+            // Check for "view_achievements" achievement
+            unlockAchievement('view_achievements');
         }
-    });
-    
-    // Initialize
-    loadSong(currentIndex);
-    loadCategory('all');
+
+        // Hide achievements modal
+        function hideAchievements() {
+            elements.achievementsModal.classList.remove('active');
+        }
+
+        // Show settings modal
+        function showSettings() {
+            elements.settingsModal.classList.add('active');
+        }
+
+        // Hide settings modal
+        function hideSettings() {
+            elements.settingsModal.classList.remove('active');
+        }
+
+        // Return to home screen
+        function returnToHome() {
+            elements.resultScreen.classList.remove('active');
+            elements.startScreen.classList.remove('hidden');
+        }
+
+        // Render achievements in the modal
+        function renderAchievements() {
+            elements.achievementsGrid.innerHTML = '';
+            
+            achievementsList.forEach(achievement => {
+                const isUnlocked = AppState.achievements[achievement.id] || false;
+                
+                const achievementElement = document.createElement('div');
+                achievementElement.className = `achievement-item ${isUnlocked ? '' : 'locked'}`;
+                
+                const iconElement = document.createElement('div');
+                iconElement.className = 'achievement-icon';
+                iconElement.innerHTML = `<i class="fas ${achievement.icon}"></i>`;
+                
+                const nameElement = document.createElement('div');
+                nameElement.className = 'achievement-name';
+                nameElement.textContent = achievement.name;
+                
+                const descElement = document.createElement('div');
+                descElement.className = 'achievement-description';
+                descElement.textContent = achievement.description;
+                
+                achievementElement.appendChild(iconElement);
+                achievementElement.appendChild(nameElement);
+                achievementElement.appendChild(descElement);
+                
+                elements.achievementsGrid.appendChild(achievementElement);
+            });
+        }
+
+        // Update application settings
+        function updateSetting(e) {
+            const setting = e.target.dataset.setting;
+            const value = e.target.dataset.value;
+            
+            // Find all buttons for this setting
+            const buttons = document.querySelectorAll(`[data-setting="${setting}"]`);
+            
+            // Remove active class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            e.target.classList.add('active');
+            
+            // Update app state
+            switch (setting) {
+                case 'sound':
+                    AppState.sound = value === 'on';
+                    soundEnabled = AppState.sound;
+                    if (value === 'off') {
+                        unlockAchievement('sound_off');
+                    }
+                    break;
+                case 'highlighting':
+                    AppState.highlighting = value === 'on';
+                    if (value === 'off') {
+                        unlockAchievement('highlighting_off');
+                    }
+                    break;
+                case 'difficulty':
+                    AppState.paragraphType = value;
+                    if (value === 'medium') {
+                        unlockAchievement('difficulty_medium');
+                    }
+                    if (value === 'hard') {
+                        unlockAchievement('difficulty_hard');
+                    }
+                    
+                    // Check if all difficulties have been tried
+                    const usedDifficulties = new Set();
+                    document.querySelectorAll('[data-setting="difficulty"].active').forEach(btn => {
+                        usedDifficulties.add(btn.dataset.value);
+                    });
+                    
+                    if (usedDifficulties.size === 3) {
+                        unlockAchievement('all_difficulties');
+                    }
+                    
+                    break;
+                case 'timeLimit':
+                    AppState.timeLimit = parseInt(value);
+                    if (value === '30') {
+                        unlockAchievement('time_30s');
+                    }
+                    if (value === '120') {
+                        unlockAchievement('time_2m');
+                    }
+                    if (value === '300') {
+                        unlockAchievement('time_5m');
+                    }
+                    
+                    // Check if all time options have been tried
+                    const usedTimeOptions = new Set();
+                    document.querySelectorAll('[data-setting="timeLimit"].active').forEach(btn => {
+                        usedTimeOptions.add(btn.dataset.value);
+                    });
+                    
+                    if (usedTimeOptions.size === 4) {
+                        unlockAchievement('all_time_options');
+                    }
+                    
+                    break;
+                case 'language':
+                    AppState.language = value;
+                    if (value === 'hinglish') {
+                        unlockAchievement('hinglish_test');
+                    }
+                    break;
+            }
+            
+            // Unlock achievement for changing settings
+            unlockAchievement('settings_changed');
+            
+            // Save settings
+            saveSettings();
+        }
+
+        // Update settings UI based on app state
+        function updateSettingsUI() {
+            // Sound
+            document.querySelector(`[data-setting="sound"][data-value="${AppState.sound ? 'on' : 'off'}"]`).classList.add('active');
+            document.querySelector(`[data-setting="sound"][data-value="${AppState.sound ? 'off' : 'on'}"]`).classList.remove('active');
+            
+            // Highlighting
+            document.querySelector(`[data-setting="highlighting"][data-value="${AppState.highlighting ? 'on' : 'off'}"]`).classList.add('active');
+            document.querySelector(`[data-setting="highlighting"][data-value="${AppState.highlighting ? 'off' : 'on'}"]`).classList.remove('active');
+            
+            // Difficulty
+            document.querySelectorAll('[data-setting="difficulty"]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === AppState.paragraphType);
+            });
+            
+            // Time Limit
+            document.querySelectorAll('[data-setting="timeLimit"]').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.value) === AppState.timeLimit);
+            });
+            
+            // Language
+            document.querySelectorAll('[data-setting="language"]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === AppState.language);
+            });
+        }
+
+        // Check for achievements
+        function checkAchievements(wpm, accuracy) {
+            const newAchievements = [];
+            
+            // First test achievement
+            if (AppState.sessionStats.totalTests === 1) {
+                if (unlockAchievement('first_test')) {
+                    newAchievements.push(achievementsList.find(a => a.id === 'first_test'));
+                }
+            }
+            
+            // WPM achievements
+            if (wpm >= 30 && unlockAchievement('wpm_30')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'wpm_30'));
+            }
+            if (wpm >= 50 && unlockAchievement('wpm_50')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'wpm_50'));
+            }
+            if (wpm >= 70 && unlockAchievement('wpm_70')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'wpm_70'));
+            }
+            if (wpm >= 100 && unlockAchievement('wpm_100')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'wpm_100'));
+            }
+            
+            // Accuracy achievements
+            if (accuracy >= 95 && unlockAchievement('accuracy_95')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'accuracy_95'));
+            }
+            if (accuracy >= 98 && unlockAchievement('accuracy_98')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'accuracy_98'));
+            }
+            if (accuracy === 100 && unlockAchievement('accuracy_100')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'accuracy_100'));
+            }
+            
+            // Words typed achievements
+            if (AppState.sessionStats.totalWords >= 100 && unlockAchievement('words_100')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'words_100'));
+            }
+            if (AppState.sessionStats.totalWords >= 500 && unlockAchievement('words_500')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'words_500'));
+            }
+            if (AppState.sessionStats.totalWords >= 1000 && unlockAchievement('words_1000')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'words_1000'));
+            }
+            
+            // Characters typed achievements
+            if (AppState.sessionStats.totalChars >= 5000 && unlockAchievement('chars_5000')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'chars_5000'));
+            }
+            if (AppState.sessionStats.totalChars >= 10000 && unlockAchievement('chars_10000')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'chars_10000'));
+            }
+            
+            // Tests completed achievements
+            if (AppState.sessionStats.totalTests >= 5 && unlockAchievement('tests_5')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'tests_5'));
+            }
+            if (AppState.sessionStats.totalTests >= 10 && unlockAchievement('tests_10')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'tests_10'));
+            }
+            if (AppState.sessionStats.totalTests >= 25 && unlockAchievement('tests_25')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'tests_25'));
+            }
+            
+            // No errors achievements
+            if (AppState.errors === 0) {
+                if (AppState.paragraphType === 'easy' && unlockAchievement('no_errors_easy')) {
+                    newAchievements.push(achievementsList.find(a => a.id === 'no_errors_easy'));
+                }
+                if (AppState.paragraphType === 'medium' && unlockAchievement('no_errors_medium')) {
+                    newAchievements.push(achievementsList.find(a => a.id === 'no_errors_medium'));
+                }
+                if (AppState.paragraphType === 'hard' && unlockAchievement('no_errors_hard')) {
+                    newAchievements.push(achievementsList.find(a => a.id === 'no_errors_hard'));
+                }
+            }
+            
+            // Time of day achievements
+            const currentHour = new Date().getHours();
+            if (currentHour < 8 && unlockAchievement('morning_test')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'morning_test'));
+            }
+            if (currentHour >= 20 && unlockAchievement('evening_test')) {
+                newAchievements.push(achievementsList.find(a => a.id === 'evening_test'));
+            }
+            
+            // Show achievements notifications
+            if (newAchievements.length > 0) {
+                showAchievementNotifications(newAchievements);
+            }
+            
+            return newAchievements;
+        }
+
+        // Unlock an achievement
+        function unlockAchievement(achievementId) {
+            // Check if achievement is already unlocked
+            if (AppState.achievements[achievementId]) {
+                return false;
+            }
+            
+            // Unlock achievement
+            AppState.achievements[achievementId] = true;
+            
+            // Update achievement in list
+            const achievement = achievementsList.find(a => a.id === achievementId);
+            if (achievement) {
+                achievement.unlocked = true;
+            }
+            
+            // Save achievements
+            saveAchievements();
+            
+            return true;
+        }
+
+        // Show achievement notification
+        function showAchievementNotifications(achievements) {
+            if (achievements.length === 0) return;
+            
+            // Play achievement sound
+            playAchievementSound();
+            
+            // Show notifications one by one with a delay
+            let delay = 0;
+            
+            achievements.forEach((achievement, index) => {
+                setTimeout(() => {
+                    // Update notification content
+                    elements.notificationDesc.textContent = `${achievement.name}: ${achievement.description}`;
+                    
+                    // Show notification
+                    elements.achievementNotification.classList.add('active');
+                    
+                    // Hide notification after a delay
+                    setTimeout(() => {
+                        elements.achievementNotification.classList.remove('active');
+                    }, 3000);
+                }, delay);
+                
+                delay += 3500; // Add delay for the next notification
+            });
+        }
+
+        // Save achievements to localStorage
+        function saveAchievements() {
+            localStorage.setItem('typingAppAchievements', JSON.stringify(AppState.achievements));
+        }
+
+        // Load achievements from localStorage
+        function loadAchievements() {
+            const savedAchievements = localStorage.getItem('typingAppAchievements');
+            
+            if (savedAchievements) {
+                AppState.achievements = JSON.parse(savedAchievements);
+                
+                // Update achievements list
+                achievementsList.forEach(achievement => {
+                    achievement.unlocked = AppState.achievements[achievement.id] || false;
+                });
+            }
+        }
+
+        // Save session stats to localStorage
+        function saveSessionStats() {
+            localStorage.setItem('typingAppSessionStats', JSON.stringify(AppState.sessionStats));
+        }
+
+        // Load session stats from localStorage
+        function loadSessionStats() {
+            const savedStats = localStorage.getItem('typingAppSessionStats');
+            
+            if (savedStats) {
+                AppState.sessionStats = JSON.parse(savedStats);
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                sound: AppState.sound,
+                highlighting: AppState.highlighting,
+                paragraphType: AppState.paragraphType,
+                timeLimit: AppState.timeLimit,
+                language: AppState.language
+            };
+            
+            localStorage.setItem('typingAppSettings', JSON.stringify(settings));
+        }
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('typingAppSettings');
+            
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                AppState.sound = settings.sound !== undefined ? settings.sound : true;
+                AppState.highlighting = settings.highlighting !== undefined ? settings.highlighting : true;
+                AppState.paragraphType = settings.paragraphType || 'easy';
+                AppState.timeLimit = settings.timeLimit || 60;
+                AppState.language = settings.language || 'english';
+                
+                // Update sound enabled
+                soundEnabled = AppState.sound;
+            }
+        }
     </script>
 </body>
 </html>
